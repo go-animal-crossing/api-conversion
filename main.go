@@ -88,7 +88,7 @@ func main() {
 	}
 
 	fs := afero.NewOsFs()
-	dir := "../tmp-data-pages"
+	dir := "./src/data"
 	now := time.Now()
 	// now we save each converted item as a page
 	var pg pages.Page
