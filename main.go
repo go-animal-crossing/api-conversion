@@ -106,7 +106,6 @@ func main() {
 			log.Fatalf("ERROR: %v\n", err)
 			os.Exit(1)
 		}
-
 	}
 
 	// work out Links
@@ -121,7 +120,7 @@ func main() {
 
 	// now these are the list pages
 	// => /
-	//
+	// => /mine
 	// => /{type}/
 	// => /{type}/{new|leaving|available}/
 	// => /{type}/{new|leaving|available}/{north|south}
@@ -132,6 +131,66 @@ func main() {
 	// => /{new|leaving|available}/{month}/
 	// => /{new|leaving|available}/{month}/{north|south}
 	// => /{new|leaving|available}/{north|south}
+
+	// => /
+	available := converted.Filter(target.Filter{Is: config.Available})
+	fmt.Printf("Generating / -> found (%d) items\n", len(available))
+	home := pages.Page{
+		Title:    "Homepage",
+		URI:      "/",
+		Template: "home.html",
+		IsList:   true,
+		Items:    available,
+		Type:     target.Type{Title: "home"},
+		Meta: pages.Meta{
+			Type: "home",
+			Links: pages.Links{
+				Months: monthlinks}},
+		Grid: pages.Grid{
+			Is:         true,
+			Type:       true,
+			Hemisphere: true}}
+	home.Save(fs, dir)
+
+	// => /mine
+	all := converted.Filter(target.Filter{})
+	fmt.Printf("Generating /mine -> found (%d) items\n", len(all))
+	mine := pages.Page{
+		ID:       "shareable",
+		Title:    "My Island",
+		URI:      "/mine",
+		Template: "shareable.html",
+		IsList:   true,
+		Items:    all,
+		Type:     target.Type{Title: "home"},
+		Meta: pages.Meta{
+			Type: "mixed",
+			Links: pages.Links{
+				Months: monthlinks}},
+		Grid: pages.Grid{
+			Is:         false,
+			Type:       true,
+			Hemisphere: false}}
+	mine.Save(fs, dir)
+
+	fmt.Printf("Generating /shared/ -> found (%d) items\n", len(all))
+	shared := pages.Page{
+		ID:       "shared",
+		Title:    "Shared Island",
+		URI:      "/shared",
+		Template: "shared.html",
+		IsList:   true,
+		Items:    all,
+		Type:     target.Type{Title: "home"},
+		Meta: pages.Meta{
+			Type: "mixed",
+			Links: pages.Links{
+				Months: monthlinks}},
+		Grid: pages.Grid{
+			Is:         false,
+			Type:       true,
+			Hemisphere: false}}
+	shared.Save(fs, dir)
 
 	// => /{type}/
 	for _, m := range config.Config.ModelConfigs {

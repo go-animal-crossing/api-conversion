@@ -26,6 +26,14 @@ type Page struct {
 	Items    []target.Item `json:"items,omitempty"`
 	Has      config.Has    `json:"has"`
 	Meta     Meta          `json:"meta,omitempty"`
+	Grid     Grid          `json:"grid,omitempty"`
+}
+
+// Grid is used for home page and sharing pages
+type Grid struct {
+	Type       bool `json:"type"`
+	Is         bool `json:"is"`
+	Hemisphere bool `json:"hemisphere"`
 }
 
 // Meta contains top level info for listing
