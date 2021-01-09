@@ -81,8 +81,8 @@ func (i *Item) convertPrices() target.Prices {
 // convertImages provides target imagery
 func (i *Item) convertImages() target.Images {
 	return target.Images{
-		Thumb: i.IconURI,
-		Main:  i.ImageURI}
+		ThumbSource: i.IconURI,
+		MainSource:  i.ImageURI}
 }
 
 // convertPhrases returns target formatted struct

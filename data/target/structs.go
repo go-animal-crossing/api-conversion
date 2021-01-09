@@ -110,8 +110,10 @@ type Prices struct {
 
 // Images provide
 type Images struct {
-	Thumb string `json:"thumb"`
-	Main  string `json:"main"`
+	ThumbSource string `json:"thumb_source"`
+	Thumb       string `json:"thumb"`
+	MainSource  string `json:"main_source"`
+	Main        string `json:"main"`
 }
 
 // Phrases provides
