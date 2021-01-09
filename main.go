@@ -77,6 +77,10 @@ func altHemisphere(h config.HemisphereItem) config.HemisphereItem {
 // main func
 func main() {
 
+	fs := afero.NewOsFs()
+	dir := "./src/data"
+	now := time.Now()
+
 	// download and convert
 	source := source.Source{}
 	source.Load()
@@ -87,9 +91,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fs := afero.NewOsFs()
-	dir := "./src/data"
-	now := time.Now()
+	converted.DownloadImages(fs, "./src/images/")
 	// now we save each converted item as a page
 	var pg pages.Page
 
@@ -121,6 +123,7 @@ func main() {
 	// now these are the list pages
 	// => /
 	// => /mine
+	// => /shared
 	// => /{type}/
 	// => /{type}/{new|leaving|available}/
 	// => /{type}/{new|leaving|available}/{north|south}
