@@ -3,6 +3,7 @@ package target
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -20,18 +21,35 @@ func (t *Target) DownloadImages(fs afero.Fs, dir string) {
 	pool.Start(size)
 
 	items := &t.All
+	countM := 0
+	countT := 0
 	for i := range *items {
 		pool.Add(func() {
-			(*items)[i].DownloadMain(&fs, &dir)
-			(*items)[i].DownloadThumb(&fs, &dir)
+			e := (*items)[i].DownloadMain(&fs, &dir)
+			if e == nil {
+				countM++
+			} else {
+				log.Println((*items)[i].Images.Main)
+			}
+		})
+		pool.Add(func() {
+			e := (*items)[i].DownloadThumb(&fs, &dir)
+			if e == nil {
+				countT++
+			} else {
+				log.Println((*items)[i].Images.Thumb)
+			}
 		})
 	}
-
 	pool.CloseAndWait()
+	l := len(t.All)
+	if countM != l || countT != l {
+		log.Fatalf("Length did not match downloaded\n%v\n%v\n%v\n", countM, countT, l)
+	}
 }
 
 // DownloadMain is
-func (i *Item) DownloadMain(fs *afero.Fs, dir *string) {
+func (i *Item) DownloadMain(fs *afero.Fs, dir *string) error {
 	file := fmt.Sprintf("%s%s/main/%s.png", *dir, i.Type.Slug, i.Slug)
 	e := dl(
 		i.Images.Main,
@@ -41,10 +59,11 @@ func (i *Item) DownloadMain(fs *afero.Fs, dir *string) {
 	if e == nil {
 		i.Images.Main = strings.ReplaceAll(file, "./src", "")
 	}
+	return e
 }
 
 // DownloadThumb is
-func (i *Item) DownloadThumb(fs *afero.Fs, dir *string) {
+func (i *Item) DownloadThumb(fs *afero.Fs, dir *string) error {
 	file := fmt.Sprintf("%s%s/thumb/%s.png", *dir, i.Type.Slug, i.Slug)
 	e := dl(
 		i.Images.Thumb,
@@ -54,6 +73,7 @@ func (i *Item) DownloadThumb(fs *afero.Fs, dir *string) {
 	if e == nil {
 		i.Images.Thumb = strings.ReplaceAll(file, "./src", "")
 	}
+	return e
 }
 
 func dl(url string, filename string, fs afero.Fs) error {
