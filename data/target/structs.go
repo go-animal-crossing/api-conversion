@@ -118,6 +118,8 @@ type Images struct {
 
 // Phrases provides
 type Phrases struct {
-	Capture string `json:"capture"`
-	Museum  string `json:"museum"`
+	Capture     string `json:"capture"`
+	CaptureSafe string `json:"capture_safe"`
+	Museum      string `json:"museum"`
+	MuseumSafe  string `json:"museum_safe"`
 }

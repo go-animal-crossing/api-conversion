@@ -88,8 +88,10 @@ func (i *Item) convertImages() target.Images {
 // convertPhrases returns target formatted struct
 func (i *Item) convertPhrases() target.Phrases {
 	return target.Phrases{
-		Museum:  i.MuseumPhrase,
-		Capture: i.CatchPhrase}
+		Museum:      i.MuseumPhrase,
+		Capture:     i.CatchPhrase,
+		MuseumSafe:  strings.ReplaceAll(i.MuseumPhrase, "'", ""),
+		CaptureSafe: strings.ReplaceAll(i.CatchPhrase, "'", "")}
 }
 
 // convertAttributes merges shadow, speed etc together
