@@ -25,6 +25,7 @@ func (i *Item) Convert() (target.Item, error) {
 	ti := target.Item{
 		ID:           i.convertID(),
 		Title:        i.convertName(),
+		TitleSafe:    safe(i.convertName()),
 		Template:     i.defaultTemplate(),
 		Type:         i.convertType(),
 		Prices:       i.convertPrices(),
@@ -90,8 +91,14 @@ func (i *Item) convertPhrases() target.Phrases {
 	return target.Phrases{
 		Museum:      i.MuseumPhrase,
 		Capture:     i.CatchPhrase,
-		MuseumSafe:  strings.ReplaceAll(i.MuseumPhrase, "'", ""),
-		CaptureSafe: strings.ReplaceAll(i.CatchPhrase, "'", "")}
+		MuseumSafe:  safe(i.MuseumPhrase),
+		CaptureSafe: safe(i.CatchPhrase)}
+}
+
+func safe(str string) string {
+	str = strings.ReplaceAll(str, "'", "")
+	str = strings.ReplaceAll(str, "\"", "")
+	return str
 }
 
 // convertAttributes merges shadow, speed etc together

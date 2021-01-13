@@ -56,11 +56,11 @@ func Test_ConvertImages(t *testing.T) {
 	i := sampleSimpleSourceItem()
 	img := i.convertImages()
 
-	if img.Main != i.ImageURI {
+	if img.MainSource != i.ImageURI {
 		log.Fatalf("Failed to convert image uri: [%v]\n", img.Main)
 	}
 
-	if img.Thumb != i.IconURI {
+	if img.ThumbSource != i.IconURI {
 		log.Fatalf("Failed to convert icon uri: [%v]\n", img.Thumb)
 	}
 }

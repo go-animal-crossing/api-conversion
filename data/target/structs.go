@@ -25,6 +25,7 @@ type Target struct {
 type Item struct {
 	ID           string             `json:"id"`
 	Title        string             `json:"title"`
+	TitleSafe    string             `json:"title_safe"`
 	URI          string             `json:"url"`
 	Slug         string             `json:"slug"`
 	Template     string             `json:"template"`
