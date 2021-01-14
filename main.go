@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/spf13/afero"
@@ -116,7 +117,7 @@ func main() {
 		m := time.Month(i)
 		t := time.Date(2000, m, 1, 1, 1, 1, 1, time.UTC)
 		monthlinks = append(monthlinks, pages.MonthLink{
-			MonthLong:  t.Format("January"),
+			MonthLong:  strings.ToLower(t.Format("January")),
 			MonthShort: t.Format("Jan")})
 	}
 
