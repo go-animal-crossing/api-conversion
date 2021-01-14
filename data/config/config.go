@@ -23,7 +23,7 @@ func init() {
 			Slug:  "sea-creatures",
 			Title: "Sea Creatures",
 			IsA:   Sea,
-			Has:   Has{Price: true, Shadow: true, Speed: true, Rarity: true, Location: true, Availability: true}}}
+			Has:   Has{Price: true, Shadow: true, Speed: true, Rarity: false, Location: true, Availability: true}}}
 
 	Config = Data{
 		APIEndpoint:  "https://acnhapi.com/v1a/",
