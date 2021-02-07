@@ -130,3 +130,29 @@ func Test_Filters_Month(t *testing.T) {
 		log.Fatalf("Month filter for south failed, should return 1, returned [%v]\n%v\n", len(f), f)
 	}
 }
+
+func Test_Filters_Month_ConflictingDates(t *testing.T) {
+	tg := Target{}
+	// items should have two items
+	items := sampleNewInFebTest()
+	if len(items) != 3 {
+		log.Fatalf("Item setup failure!\n%v\n", items)
+	}
+	tg.All = items
+
+	m := time.Month(2)
+	f := tg.Filter(Filter{Is: config.New, Month: m, Hemisphere: config.South})
+
+	if len(f) != 1 {
+		log.Fatalf("Conflicting month for South filter for south failed, should return 1, returned [%v]\n%v\n", len(f), f)
+	}
+
+	if f[0].ID != "12" {
+		log.Fatalf("Filter returned incorrect item, returned:\n%v\n", f[0])
+	}
+
+	f = tg.Filter(Filter{Is: config.New, Month: m, Hemisphere: config.North})
+	if len(f) != 1 {
+		log.Fatalf("Conflicting month for North filter failed, should return 1, returned [%v]\n%v\n", len(f), f)
+	}
+}

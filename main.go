@@ -102,7 +102,7 @@ func main() {
 		pg.Items = []target.Item{item}
 		pg.Meta = pages.Meta{Type: item.Type.Slug}
 
-		fmt.Printf("Generating %s\n", pg.GetURL())
+		fmt.Printf("Generating {%s}\n", pg.GetURL())
 
 		err := pg.Save(fs, dir)
 		if err != nil {
@@ -177,7 +177,7 @@ func main() {
 			Hemisphere: false}}
 	mine.Save(fs, dir)
 
-	fmt.Printf("Generating /shared/ -> found (%d) items\n", len(all))
+	fmt.Printf("Generating /shared -> found (%d) items\n", len(all))
 	shared := pages.Page{
 		ID:       "shared",
 		Title:    "Shared Island",
@@ -203,7 +203,7 @@ func main() {
 			Month: now.Month(),
 			Type:  m.IsA})
 
-		fmt.Printf("Generating /{%s}/ -> found (%d) items\n", m.Slug, len(byType))
+		fmt.Printf("Generating /{%s} -> found (%d) items\n", m.Slug, len(byType))
 		title := fmt.Sprintf("%s", m.Title)
 		pg = pages.Page{
 			Title:    title,
@@ -230,7 +230,7 @@ func main() {
 				Type:  m.IsA,
 				Month: now.Month(),
 				Is:    is.ID})
-			fmt.Printf("Generating /{%s}/%s -> found (%d) items\n", m.Slug, is.Slug, len(byTypeAndIs))
+			fmt.Printf("Generating /{%s}/{%s} -> found (%d) items\n", m.Slug, is.Slug, len(byTypeAndIs))
 
 			title = fmt.Sprintf("%s %s", is.Name, m.Title)
 			pg.Title = title
@@ -250,7 +250,7 @@ func main() {
 					Type:       m.IsA,
 					Hemisphere: h.ID,
 					Is:         is.ID})
-				fmt.Printf("Generating /{%s}/%s/%s -> found (%d) items\n", m.Slug, is.Slug, h.Slug, len(byTypeIsAndH))
+				fmt.Printf("Generating /{%s}/{%s}/{%s} -> found (%d) items\n", m.Slug, is.Slug, h.Slug, len(byTypeIsAndH))
 				title = fmt.Sprintf("%s %s in the %s hemisphere", is.Name, m.Title, h.Name)
 				p := pg
 				p.Title = title
@@ -277,7 +277,7 @@ func main() {
 					Month: mth,
 					Is:    is.ID})
 
-				fmt.Printf("Generating /{%s}/%s/%s -> found (%d) items\n", m.Slug, is.Slug, ms, len(byTypeIsAndM))
+				fmt.Printf("Generating /{%s}/{%s}/{%s} -> found (%d) items\n", m.Slug, is.Slug, ms, len(byTypeIsAndM))
 
 				title = fmt.Sprintf("%s %s in %s", is.Name, m.Title, mth.String())
 				p := pg
@@ -298,7 +298,7 @@ func main() {
 						Hemisphere: hs.ID,
 						Is:         is.ID})
 
-					fmt.Printf("Generating /{%s}/%s/%s/%s -> found (%d) items\n", m.Slug, is.Slug, ms, hs.Slug, len(byTypeIsHAndM))
+					fmt.Printf("Generating /{%s}/{%s}/{%s}/{%s} -> found (%d) items\n", m.Slug, is.Slug, ms, hs.Slug, len(byTypeIsHAndM))
 
 					title = fmt.Sprintf("%s %s in %s for the %s hemisphere", is.Name, m.Title, mth.String(), hs.Name)
 					p.Meta.Hemisphere = hs.Slug
@@ -323,7 +323,7 @@ func main() {
 		byIs := converted.Filter(target.Filter{
 			Month: now.Month(),
 			Is:    is.ID})
-		fmt.Printf("Generating /{%s}/ -> found (%d) items\n", is.Slug, len(byIs))
+		fmt.Printf("Generating /{%s} -> found (%d) items\n", is.Slug, len(byIs))
 		title := fmt.Sprintf("%s", is.Name)
 		pg = pages.Page{
 			Title:    title,
@@ -345,12 +345,13 @@ func main() {
 		// => /{new|leaving|available}/{north|south}
 
 		for _, h := range config.Config.HemisphereOptions {
-			byIsAndH := converted.Filter(target.Filter{
+			filter := target.Filter{
 				Hemisphere: h.ID,
 				Month:      now.Month(),
-				Is:         is.ID})
+				Is:         is.ID}
+			byIsAndH := converted.Filter(filter)
 
-			fmt.Printf("Generating /{%s}/%s -> found (%d) items\n", is.Slug, h.Slug, len(byIsAndH))
+			fmt.Printf("Generating /{%s}/{%s} -> found (%d) items\n", is.Slug, h.Slug, len(byIsAndH))
 
 			title = fmt.Sprintf("%s in the %s hemisphere", is.Name, h.Name)
 			p := pg
@@ -372,7 +373,7 @@ func main() {
 				Month: mth,
 				Is:    is.ID})
 
-			fmt.Printf("Generating /{%s}/%s -> found (%d) items\n", is.Slug, ms, len(byIsAndM))
+			fmt.Printf("Generating /{%s}/{%s} -> found (%d) items\n", is.Slug, ms, len(byIsAndM))
 			title = fmt.Sprintf("%s in %s", is.Name, mth.String())
 			p := pg
 			p.Meta.Month = ms
@@ -390,7 +391,7 @@ func main() {
 					Hemisphere: h.ID,
 					Is:         is.ID})
 
-				fmt.Printf("Generating /{%s}/%s/%s/ -> found (%d) items\n", is.Slug, ms, h.Slug, len(byIsMAndH))
+				fmt.Printf("Generating /{%s}/{%s}/{%s} -> found (%d) items\n", is.Slug, ms, h.Slug, len(byIsMAndH))
 
 				title = fmt.Sprintf("%s in %s for the %s hemisphere", is.Name, mth.String(), h.Name)
 				p.Meta.Hemisphere = h.Slug

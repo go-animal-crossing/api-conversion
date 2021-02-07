@@ -27,17 +27,33 @@ func (t *Target) Filter(filter Filter) (found []Item) {
 		ts := utility.MonthToTime(mnth)
 		t.UpdateIs(&found, ts)
 	}
-	// handle type filters
+
+	// Filter by type outside of other items as thats top level
+	// restriction
 	if ty := filter.Type; ty > 0 {
 		found = t.filterByType(ty, found)
 	}
-	// handle Is filter (new / available / leaving)
-	if is := filter.Is; is > 0 {
-		found = t.filterByIs(is, found)
-	}
-	// handle hemisphere filter (north / south)
+
+	// if hemisphere is set, then we need to restrict data to
+	// what matches
 	if h := filter.Hemisphere; h > 0 {
-		found = t.filterByHemisphere(h, found)
+		// if Is filter is set, then we filter by both hemisphere
+		// and Is
+		// otherwise, just check hemisphere as before, which is
+		// effectively Available
+		if is := filter.Is; is > 0 {
+			found = t.filterByIsAndHemisphere(is, h, found)
+		} else {
+			found = t.filterByHemisphere(h, found)
+		}
+
+	} else {
+		// if no hemisphere is set, then just check on the
+		// the is, otherwise dont filter (to preserve empty filter returning all)
+		if is := filter.Is; is > 0 {
+			found = t.filterByIs(is, found)
+		}
+
 	}
 
 	return
@@ -61,6 +77,29 @@ func (t *Target) filterByHemisphere(h config.ANCHHemisphere, all []Item) (found 
 			found = append(found, item)
 		}
 	}
+	return
+}
+
+// filterByIsAndHemisphere matches on both Is and Hemishphere
+func (t *Target) filterByIsAndHemisphere(is config.ANCHIs, h config.ANCHHemisphere, all []Item) (found []Item) {
+	found = make([]Item, 0)
+	for _, item := range all {
+		// determine which hemisphere to use
+		hemi := item.Is.Northern
+		if h == config.SouthHemisphere.ID {
+			hemi = item.Is.Southern
+		}
+		// get all is data for this item in map
+		mapped := map[config.ANCHIs]bool{
+			config.Leaving:   hemi.Leaving,
+			config.Available: hemi.Availabile,
+			config.New:       hemi.New}
+		// compare the index, if that is true, then add
+		if mapped[is] == true {
+			found = append(found, item)
+		}
+	}
+
 	return
 }
 
